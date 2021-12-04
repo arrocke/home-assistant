@@ -11,4 +11,9 @@ tts:
 
 template: !include packages/hvac/templates.yaml
 
+input_boolean:
+  travelling:
+    name: Travelling
+    icon: hass:airplane-takeoff
+
 
