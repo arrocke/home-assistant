@@ -4,6 +4,11 @@ default_config:
 homeassistant:
   packages: 
     hvac: !include packages/hvac/configuration.yaml
+  latitude: 44.88545441367347
+  longitude: -93.03756994195282
+  elevation: 253
+  unit_system: imperial
+  time_zone: America/Chicago
 
 # Text to speech
 tts:
