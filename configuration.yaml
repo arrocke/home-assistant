@@ -4,35 +4,9 @@ default_config:
 homeassistant:
   packages: 
     hvac: !include packages/hvac/configuration.yaml
-  name: Home
-  latitude: 44.88545441367347
-  longitude: -93.03756994195282
-  elevation: 253
-  unit_system: imperial
-  time_zone: America/Chicago
-  internal_url: http://homeassistant.local:8123
-  external_url: https://chandrian.duckdns.org:8123
 
 # Text to speech
 tts:
   - platform: google_translate
 
 template: !include packages/hvac/templates.yaml
-
-input_boolean:
-  travelling:
-    name: Travelling
-    icon: hass:airplane-takeoff
-
-person:
-  - id: adrian_rocke
-    name: Adrian
-    user_id: e746228778534b5b9888df7b25c8848f
-    device_trackers:
-      - device_tracker.phone_adrian
-  - id: charity_rocke
-    name: Charity
-    user_id: ae0430bc83da4a1193a2690da10c603b
-    device_trackers:
-      - device_tracker.phone_charity
-
