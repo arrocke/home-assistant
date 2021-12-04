@@ -1,0 +1,14 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  packages: 
+    hvac: !include packages/hvac/configuration.yaml
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+template: !include packages/hvac/templates.yaml
+
+

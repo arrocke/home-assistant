@@ -1,0 +1,7 @@
+.storage/
+.HA_VERSION
+home-assistant*
+custom_components/
+secrets.yaml
+www/
+tts/

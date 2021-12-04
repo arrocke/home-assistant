@@ -1,0 +1,39 @@
+- sensor:
+  - name: Climate Status
+    state: >
+      {% set time = now().time() %}
+      {% if states.input_boolean.travelling.state == 'on' %}
+        travelling
+      {% else %}
+        daily
+      {% endif %}
+- sensor:
+  - name: "Reference Temperatures"
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+    state: >
+      {% set livingroom = states.climate.home_thermostat.attributes.current_temperature | float %}
+      {% set bedroom = states.sensor.main_bedroom_air_temperature.state | float %}
+      {{ [livingroom] }}
+- sensor:
+  - name: "High Temperature Setpoint"
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+    state: >
+      {% set status = states.sensor.climate_status.state %}
+      {% if status == "travelling" %}
+        {{ states.input_number.max_temp_travelling.state }}
+      {% else %}
+        {{ states.input_number.max_temp_daily.state }}
+      {% endif %}
+- sensor:
+  - name: "Low Temperature Setpoint"
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+    state: >
+      {% set status = states.sensor.climate_status.state %}
+      {% if status == "travelling" %}
+        {{ states.input_number.min_temp_travelling.state }}
+      {% else %}
+        {{ states.input_number.min_temp_daily.state }}
+      {% endif %}

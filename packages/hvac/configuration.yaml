@@ -1,0 +1,111 @@
+input_number:
+  min_temp_daily:
+    name: Minimum Temperature - Daily
+    initial: 68
+    min: 65
+    max: 72
+    step: 1
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+  max_temp_daily:
+    name: Maximum Temperature - Daily
+    initial: 75
+    min: 70
+    max: 80
+    step: 1
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+  min_temp_travelling:
+    name: Minimum Temperature - Travelling
+    initial: 65
+    min: 65
+    max: 72
+    step: 1
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+  max_temp_travelling:
+    name: Maximum Temperature - Travelling
+    initial: 80
+    min: 70
+    max: 80
+    step: 1
+    unit_of_measurement: "°F"
+    icon: hass:thermometer
+automation:
+  - id: '1628602512181'
+    alias: Turn on AC
+    description: Turns the AC on when the reference temperature crosses the high setpoint
+    trigger:
+    - platform: template
+      value_template: >
+        {% set reference = states.sensor.reference_temperatures.state | from_json %}
+        {% set high = states.sensor.high_temperature_setpoint.state | from_json %}
+
+        {% set result = namespace(state = false) %}
+        {% for temp in reference %}
+          {% set result.state = result.state or temp > high %}
+        {% endfor %}
+        
+        {{ result.state }}
+      for: 00:03:00
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      target:
+        entity_id: climate.home_thermostat
+      data:
+        hvac_mode: cool
+    mode: queued
+
+  - id: '1628602512182'
+    alias: Turn on Furnace
+    description: Turns the furnace on when any reference temperature crosses the low
+      setpoint
+    trigger:
+    - platform: template
+      value_template: >
+        {% set reference = states.sensor.reference_temperatures.state | from_json %}
+        {% set low = states.sensor.low_temperature_setpoint.state | from_json %}
+
+        {% set result = namespace(state = false) %}
+        {% for temp in reference %}
+          {% set result.state = result.state or temp < low %}
+        {% endfor %}
+        
+        {{ result.state }}
+      for: 00:03:00
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      target:
+        entity_id: climate.home_thermostat
+      data:
+        hvac_mode: heat
+    mode: queued
+
+  - id: '1628602512183'
+    alias: Turn off Furnace/AC
+    description: Turns off the AC or furnace when the reference temperature is between
+      setpoints
+    trigger:
+    - platform: template
+      value_template:  >
+        {% set reference = states.sensor.reference_temperatures.state | from_json %}
+        {% set low = states.sensor.low_temperature_setpoint.state | from_json %}
+        {% set high = states.sensor.high_temperature_setpoint.state | from_json %}
+
+        {% set result = namespace(state = true) %}
+        {% for temp in reference %}
+          {% set result.state = result.state and (temp >= low and temp <= high) %}
+        {% endfor %}
+        
+        {{ result.state }}
+      for: 00:03:00
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      target:
+        entity_id: climate.home_thermostat
+      data:
+        hvac_mode: 'off'
+    mode: queued
